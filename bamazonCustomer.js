@@ -1,4 +1,3 @@
-// Then create a Node application called `bamazonCustomer.js`. Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
 
 // 6. The app should then prompt users with two messages.
 
@@ -17,6 +16,8 @@
 
 // * If this activity took you between 8-10 hours, then you've put enough time into this assignment. Feel free to stop here -- unless you want to take on the next challenge.
 var mysql = require("mysql");
+var inquirer = require("inquirer");
+
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -30,21 +31,45 @@ var connection = mysql.createConnection({
   // Your password
   password: "1155850Bety*",
   database: "bamazon_db"
+
 });
 connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
+});
   
 
     connection.query('SELECT * FROM `products`', function (err, res) {
       if (err) throw err;
       console.log(res);
+      start()
+
     });
+
+
+
+    function start() {
+        inquirer
+        .prompt([
+            
+            {
+            name:"id",
+            type:"input",
+            message:"What is the id of the product you would like to buy?",
+            },
+            {
+                name:"unit",
+                type:"input",
+                message:"how many units of the product they would like to buy?",
+            },
+          ])
+
+          }
+          
     //   connection.query("  SELECT topsongs, COUNT(*) c FROM topsongs GROUP BY artistname HAVING c > 1", function(err, res) {
     //       if(err) throw err,
     //       console.log(res)
     //       connection.end();
       
     // });
-
-    });
+        
