@@ -41,6 +41,7 @@ connection.connect(function(err) {
   
     connection.query('SELECT * FROM `products`', function (err, res) {
       if (err) throw err;
+      console.log(colors.bgWhite("====================="));
       console.log(colors.rainbow("=========WELCOME TO BAMAZON====="))
       console.log(res);
       start()
