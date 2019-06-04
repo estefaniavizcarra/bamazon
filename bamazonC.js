@@ -17,6 +17,7 @@
 // * If this activity took you between 8-10 hours, then you've put enough time into this assignment. Feel free to stop here -- unless you want to take on the next challenge.
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var colors = require("colors")
 
 
 var connection = mysql.createConnection({
@@ -37,15 +38,14 @@ connection.connect(function(err) {
     console.log("connected as id " + connection.threadId);
 });
   
-
+  
     connection.query('SELECT * FROM `products`', function (err, res) {
       if (err) throw err;
+      console.log(colors.rainbow("=========WELCOME TO BAMAZON====="))
       console.log(res);
       start()
 
     });
-
-
 
     function start() {
         inquirer
@@ -53,7 +53,7 @@ connection.connect(function(err) {
     
             name:"id",
             type:"input",
-            message:"What is the id of the product you would like to buy?",
+            message:"What is the id of the item you want to buy?",
             })
             .then(function (answer1) {
               var selection = answer1.id;
@@ -63,27 +63,27 @@ connection.connect(function(err) {
                ) {
         if (err) throw err;
         if (res.length === 0) {
-          console.log(
-            "That Product doesn't exist, Please enter a Product Id from the list above"
-          );
+          console.log(colors.red(
+            "That Product doesn't exit enter a valid ID"
+          ));
           start();
         }else{
           inquirer
             .prompt({
               name: "quantity",
               type: "input",
-              message: "How many items woul you like to purchase?"
+              message: "How many items would you like to purchase?"
 
         })
         .then(function(answer2){
           var quantity = answer2.quantity;
           if(quantity > res[0].stock_quantity){
-            console.log("we only have" + res[0].stock_quantity +"items of the products selected");
+            console.log("There's only" + res[0].stock_quantity +"items of the products selected");
             start();
 
           }else{
             console.log(res[0].products_name + " purchased");
-            console.log(quantity + " qty @ $" + res[0].price);
+            console.log(quantity + "      $" + res[0].price);
 
             var actualizarInv = res[0].stock_quantity - quantity;
             connection.query(
@@ -91,10 +91,7 @@ connection.connect(function(err) {
               actualizarInv +
               " WHERE id = " + res[0].id,
               function (err, resUpdate) {
-                console.log("");
-                console.log("Your Order has been Processed");
-                console.log("Thank you for Shopping with us...!");
-                console.log("");
+                console.log("Your order has been Processed correctly");
                 connection.end();
                 
               }
