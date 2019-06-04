@@ -21,7 +21,6 @@ var inquirer = require("inquirer");
 
 var connection = mysql.createConnection({
   host: "localhost",
-
   // Your port; if not 3306
   port: 3306,
 
@@ -30,7 +29,7 @@ var connection = mysql.createConnection({
 
   // Your password
   password: "1155850Bety*",
-  database: "bamazon_db"
+  database: "bamazon_db",
 
 });
 connection.connect(function(err) {
@@ -50,26 +49,45 @@ connection.connect(function(err) {
 
     function start() {
         inquirer
-        .prompt([
-            
-            {
+        .prompt({
+    
             name:"id",
             type:"input",
             message:"What is the id of the product you would like to buy?",
-            },
-            {
-                name:"unit",
-                type:"input",
-                message:"how many units of the product they would like to buy?",
-            },
-          ])
+            })
+            .then(function (answer1) {
+              var selection = answer1.id;
+              connection.query("SELECT *  FROM products WHERE item_id= ?", selection, function(
+err,
+res
+               ) {
+              if (err) throw err;
+        if (res.length === 0) {
+          console.log(
+            "That Product doesn't exist, Please enter a Product Id from the list above"
+          );
+          start();
+        }else{
+          inquirer
+            .prompt({
+              name: "quantity",
+              type: "input",
+              message: "How many items woul you like to purchase?"
+
+        })
+        .then(function(answer2){
+          var quantity = answer2.quantity;
+          if(quantity > res[0].stock_quantity){
+            console.log(
+              ""
+            )
+          }
+        }
+  
+
+          
+
 
           }
-          
-    //   connection.query("  SELECT topsongs, COUNT(*) c FROM topsongs GROUP BY artistname HAVING c > 1", function(err, res) {
-    //       if(err) throw err,
-    //       console.log(res)
-    //       connection.end();
-      
-    // });
-        
+        });
+    
