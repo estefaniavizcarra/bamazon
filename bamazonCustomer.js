@@ -58,10 +58,10 @@ connection.connect(function(err) {
             .then(function (answer1) {
               var selection = answer1.id;
               connection.query("SELECT *  FROM products WHERE item_id= ?", selection, function(
-err,
-res
+              err,
+              res
                ) {
-              if (err) throw err;
+        if (err) throw err;
         if (res.length === 0) {
           console.log(
             "That Product doesn't exist, Please enter a Product Id from the list above"
@@ -78,16 +78,30 @@ res
         .then(function(answer2){
           var quantity = answer2.quantity;
           if(quantity > res[0].stock_quantity){
-            console.log(
-              ""
-            )
-          }
-        }
-  
+            console.log("we only have" + res[0].stock_quantity +"items of the products selected");
+            start();
 
-          
+          }else{
+            console.log(res[0].products_name + " purchased");
+            console.log(quantity + " qty @ $" + res[0].price);
 
-
-          }
-        });
-    
+            var actualizarInv = res[0].stock_quantity - quantity;
+            connection.query(
+              "UPDATE products SET stock_quantity = " +
+              actualizarInv +
+              " WHERE id = " + res[0].id,
+              function (err, resUpdate) {
+                console.log("");
+                console.log("Your Order has been Processed");
+                console.log("Thank you for Shopping with us...!");
+                console.log("");
+                connection.end();
+                
+              }
+              );
+            }
+          });
+      }
+    });
+  });
+};
