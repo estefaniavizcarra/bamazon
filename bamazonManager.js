@@ -23,7 +23,7 @@ connection.connect(function(err) {
 });
   
 function options() {
-    inquirer.createPromptModule([
+    inquirer.prompt([
 {
     name:"option",
     type:"list",
@@ -70,9 +70,9 @@ function options() {
 function productsForSale(){
     connection.query('SELECT * FROM `products`', function (err, res) {
         if (err) throw err;
-        console.log(colors.bgWhite("====================="));
+        console.log(colors.bgWhite("==========================================="));
         console.log(res);
-        console.log(colors.bgWhite("====================="));
+        console.log(colors.bgWhite("============================================================="));
 
         connection.end();
 })
@@ -93,8 +93,6 @@ function addInventory(){
             type: 'input',
 			name: 'item_id',
 			message: 'Enter de ID of the item you want to add more units',
-            filter: Number
-            
 
 },
 
@@ -102,14 +100,36 @@ function addInventory(){
             type: 'input',
             name: 'quantity',
             message: 'How many would you like to add?',
-            filter: Number
 }
     ]).then(function(input){
-        connection.query("SELECT * FROM `products WHERE item_id:" + input.item_id, function (err, res) {
+        var queryStr = 'INSERT INTO products SET ?';
+
+        var item = input.item_id;
+        var addQuantity = input.quantity;
+        connection.query(queryStr, {item_id: item}, function(err, data) {
+
             if (err) throw err;
             console.log(res)
             connection.end();
+            if (data.length === 0) {
+				console.log("Item ID incorrect");
+				addInventory();
 
+			} else {
+				var productData = data[0];
+				var updateQueryStr = 'UPDATE products SET stock_quantity = ' + (productData.stock_quantity + addQuantity) + ' WHERE item_id = ' + item;
+
+                connection.query(updateQueryStr, function(err, data) {
+					if (err) throw err;
+
+					console.log('Stock count for Item ID ' + item + ' has been updated to ' + (productData.stock_quantity + addQuantity) + '.');
+					console.log("\n---------------------------------------------------------------------\n");
+
+					// End the database connection
+					connection.end();
+				})
+			}
+	
     
         
 });
@@ -141,9 +161,9 @@ function createNewProduct(){
 
     ]).then(function (input) {
         var queryStr = 'INSERT INTO products SET ?';
-        connection.query(queryStr, input, function (error, results, fields) {
+        connection.query(queryStr, input, function (error, results) {
             if (error) throw error;
-            console.log('New product has been added to the inventory under Item ID ' + results.insertId + '.');
+            console.log('New product has been added  ' + results.insertId + '.');
             console.log("\n---------------------------------------------------------------------\n");
             connection.end();
 
@@ -153,3 +173,4 @@ function createNewProduct(){
 
 });
 }
+options()
