@@ -43,7 +43,7 @@ connection.connect(function(err) {
       if (err) throw err;
       console.log(colors.bgWhite("====================="));
       console.log(colors.rainbow("=========WELCOME TO BAMAZON====="))
-      console.log(res);
+      console.table(res);
       start()
 
     });
