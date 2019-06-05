@@ -164,7 +164,7 @@ function createNewProduct(){
         
         connection.query(queryStr, input, function (error, results) {
             if (error) throw error;
-            console.log('New product has been added  ' + results.insertId + '.');
+            console.log('New product for sale ' + results.insertId + '.');
             console.log("\n---------------------------------------------------------------------\n");
             connection.end();
 
