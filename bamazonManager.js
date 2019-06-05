@@ -72,7 +72,7 @@ function productsForSale(){
         if (err) throw err;
         console.log(colors.bgWhite("==========================================="));
         console.log(res);
-        console.log(colors.bgWhite("============================================================="));
+        console.log(colors.bgMagenta("============================================================="));
 
         connection.end();
 })
@@ -161,6 +161,7 @@ function createNewProduct(){
 
     ]).then(function (input) {
         var queryStr = 'INSERT INTO products SET ?';
+        
         connection.query(queryStr, input, function (error, results) {
             if (error) throw error;
             console.log('New product has been added  ' + results.insertId + '.');
